@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pro Level Stylish To-Do List</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  
+</head>
+<body>
+  <div class="todo-app-container">
+    <div class="todo-app">
+      <header class="todo-header">
+        <h1> To-Do List</h1>
+        <input type="text" id="newTask" placeholder="What do you need to do?" class="todo-input" />
+        <button id="addTaskButton" class="todo-add-btn">Add Task</button>
+      </header>
+
+      <ul id="todoList" class="todo-list"></ul>
+
+      <footer class="todo-footer">
+        <span id="taskCount" class="task-count">0 tasks remaining</span>
+        <button id="clearCompleted" class="clear-btn">Clear Completed</button>
+      </footer>
+
+      <!-- <button id="addTaskFloating" class="floating-btn">+</button> -->
+    </div>
+  </div>
+
+
+  <style>
+    Global Styles
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  background-color: #121212;
+  color: #ddd;
+  font-size: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.todo-app-container {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.todo-app {
+  background-color: #1a1a1a;
+  width: 100%;
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  transition: transform 0.3s ease;
+}
+
+/* Header */
+.todo-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.todo-header h1 {
+  color: #fff;
+  font-size: 2rem;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+.todo-input {
+  margin-top: 15px;
+  padding: 12px 16px;
+  width: 100%;
+  font-size: 1rem;
+  background-color: #2c2c2c;
+  border: none;
+  border-radius: 8px;
+  color: #ddd;
+  outline: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.todo-input:focus {
+  border: 2px solid #4d9fcb;
+}
+
+/* Add Task Button */
+.todo-add-btn {
+  margin-top: 20px;
+  padding: 14px 18px;
+  background-color: #4d9fcb;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.todo-add-btn:hover {
+  background-color: #357ca1;
+  transform: translateY(-2px);
+}
+
+.todo-add-btn:active {
+  transform: translateY(2px);
+}
+
+/* To-Do List */
+.todo-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 30px;
+  transition: all 0.3s ease;
+}
+
+.todo-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #2c2c2c;
+  margin: 12px 0;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: background-color 0.3s ease;
+}
+
+.todo-item:hover {
+  background-color: #333;
+}
+
+.todo-item.completed {
+  text-decoration: line-through;
+  background-color: #444;
+  color: #888;
+}
+
+.todo-item .task-text {
+  flex-grow: 1;
+  font-size: 1rem;
+  color: #fff;
+  word-wrap: break-word;
+}
+
+.todo-item .task-info {
+  font-size: 0.85rem;
+  color: #bbb;
+  margin-left: 10px;
+}
+
+.todo-item button {
+  background: none;
+  border: none;
+  color: #ff4d4d;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  font-size: 1.1rem;
+}
+
+.todo-item button:hover {
+  color: #ff1a1a;
+}
+
+/* Edit Button */
+.edit-button {
+  background-color: #4caf50;
+  color: white;
+  padding: 5px 12px;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.edit-button:hover {
+  background-color: #45a049;
+}
+
+/* Floating Add Task Button */
+.floating-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #4d9fcb;
+  color: white;
+  font-size: 2rem;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.floating-btn:hover {
+  background-color: #357ca1;
+  transform: translateY(-4px);
+}
+
+.floating-btn:active {
+  transform: translateY(2px);
+}
+
+/* Footer */
+.todo-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 30px;
+}
+
+.task-count {
+  color: #aaa;
+  font-size: 1rem;
+}
+
+.clear-btn {
+  background-color: #ff4d4d;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.clear-btn:hover {
+  background-color: #ff1a1a;
+}
+
+  </style>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+  const newTaskInput = document.getElementById("newTask");
+  const addTaskButton = document.getElementById("addTaskButton");
+  const todoList = document.getElementById("todoList");
+  const taskCount = document.getElementById("taskCount");
+  const clearCompletedButton = document.getElementById("clearCompleted");
+  const addTaskFloating = document.getElementById("addTaskFloating");
+
+  let tasks = [];
+
+  // Format date and time to display last update
+  function formatDate(date) {
+    return `${date.toLocaleDateString()} at ${date.toLocaleTimeString()}`;
+  }
+
+  // Update the task count
+  function updateTaskCount() {
+    const remainingTasks = tasks.filter(task => !task.completed).length;
+    taskCount.textContent = `${remainingTasks} task${remainingTasks !== 1 ? 's' : ''} remaining`;
+  }
+
+  // Add a new task to the list
+  function addTask(taskText) {
+    const task = {
+      text: taskText,
+      completed: false,
+      lastUpdated: new Date(),
+    };
+
+    tasks.push(task);
+    renderTasks();
+    newTaskInput.value = '';
+  }
+
+  // Render the tasks
+  function renderTasks() {
+    todoList.innerHTML = '';
+
+    tasks.forEach((task, index) => {
+      const li = document.createElement('li');
+      li.className = `todo-item ${task.completed ? 'completed' : ''}`;
+
+      const text = document.createElement('span');
+      text.className = 'task-text';
+      text.textContent = task.text;
+      li.appendChild(text);
+
+      const taskInfo = document.createElement('span');
+      taskInfo.className = 'task-info';
+      taskInfo.textContent = `Last updated: ${formatDate(task.lastUpdated)}`;
+      li.appendChild(taskInfo);
+
+      const deleteButton = document.createElement('button');
+      deleteButton.textContent = '❌';
+      deleteButton.onclick = () => removeTask(index);
+      li.appendChild(deleteButton);
+
+      const editButton = document.createElement('button');
+      editButton.className = 'edit-button';
+      editButton.textContent = '✏️ Edit';
+      editButton.onclick = () => editTask(index);
+      li.appendChild(editButton);
+
+      // Toggle completion status when clicked
+      li.onclick = () => toggleTaskCompletion(index);
+
+      todoList.appendChild(li);
+    });
+
+    updateTaskCount();
+  }
+
+  // Toggle task completion status
+  function toggleTaskCompletion(index) {
+    tasks[index].completed = !tasks[index].completed;
+    tasks[index].lastUpdated = new Date(); // Update the last updated time
+    renderTasks();
+  }
+
+  // Edit a task
+  function editTask(index) {
+    const newText = prompt('Edit your task:', tasks[index].text);
+    if (newText && newText.trim() !== '') {
+      tasks[index].text = newText.trim();
+      tasks[index].lastUpdated = new Date();
+      renderTasks();
+    }
+  }
+
+  // Remove a task
+  function removeTask(index) {
+    tasks.splice(index, 1);
+    renderTasks();
+  }
+
+  // Add a new task when the button is clicked
+  addTaskButton.onclick = () => {
+    const taskText = newTaskInput.value.trim();
+    if (taskText !== '') {
+      addTask(taskText);
+    }
+  };
+
+  // Add a new task using the floating button
+  addTaskFloating.onclick = () => {
+    const taskText = newTaskInput.value.trim();
+    if (taskText !== '') {
+      addTask(taskText);
+    }
+  };
+
+  // Clear all completed tasks
+  clearCompletedButton.onclick = () => {
+    tasks = tasks.filter(task => !task.completed);
+    renderTasks();
+  };
+
+  // Allow pressing 'Enter' to add a task
+  newTaskInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      addTask(newTaskInput.value.trim());
+    }
+  });
+
+  // Initial render
+  renderTasks();
+});
+
+  </script>
+
+</body>
+</html>
